@@ -1,0 +1,48 @@
+/*
+****************************************************************************
+**                       ***  KN mapserver  ***                           **
+** Copyright (C) 2007  Jiri Petrak                                        **
+** University of West Bohemia, Pilsen, Czech Republic                     **
+** e-mail: jiripetrak@seznam.cz                                           **
+**                                                                        **
+** - knihovna pro ziskavani a vizualizaci atributovych dat informacniho   **
+** systemu katastru nemovitosti CR ulozenych v databazi PostGIS           **
+** pomoci programu UMN MapServer                                          **
+**                                                                        **
+** - library for acquisition and display of Czech Republic land registry  **
+** information system attribute data stored in PostGIS database           **
+** using UMN MapServer software                                           **
+**                                                                        **
+**  This library is free software; you can redistribute it and/or         **
+** modify it under the terms of the GNU Lesser General Public             **
+** License as published by the Free Software Foundation; either           **
+** version 2.1 of the License, or (at your option) any later version.     **
+**                                                                        **
+** This library is distributed in the hope that it will be useful,        **
+** but WITHOUT ANY WARRANTY; without even the implied warranty of         **
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      **
+** Lesser General Public License for more details.                        **
+**                                                                        **
+** You should have received a copy of the GNU Lesser General Public       **
+** License along with this library; if not, write to the Free Software    **
+** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,             **
+** MA  02110-1301  USA                                                    **
+****************************************************************************
+*/
+
+body {font-family:"Courier New";}
+table {width:100%;border-collapse:collapse;}
+table.sekce {border-top:double;}
+td {font-weight:bold;padding:3px;spacing:3px;}
+td.alignright {text-align:right;}
+th {text-align:left;font-weight:normal;font-style:italic;}
+th.sekce_pismeno {width:5%;font-style:normal;}
+th.bezzapisu {font-style:normal;font-weight:bold;}
+th.hlavickaleva {text-align:right; width:120px;font-style:normal;}
+th.hlavickaprava {text-align:right; width:180px;font-style:normal;}
+th.upozorneni {font-weight:bold; color:red;}
+th.zapatiprave{text-align:right;width:200px;}
+.stranka {width:800px;}
+.bold {font-weight:bold;}
+.borderbottom th {border-bottom:1px solid;}
+.italic {font-style:italic;}

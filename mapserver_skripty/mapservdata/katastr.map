@@ -1,0 +1,218 @@
+#****************************************************************************
+#**                       ***  KN mapserver  ***                           **
+#** Copyright (C) 2007  Jiri Petrak                                        **
+#** University of West Bohemia, Pilsen, Czech Republic                     **
+#** e-mail: jiripetrak@seznam.cz                                           **
+#**                                                                        **
+#** - knihovna pro ziskavani a vizualizaci atributovych dat informacniho   **
+#** systemu katastru nemovitosti CR ulozenych v databazi PostGIS           **
+#** pomoci programu UMN MapServer                                          **
+#**                                                                        **
+#** - library for acquisition and display of Czech Republic land registry  **
+#** information system attribute data stored in PostGIS database           **
+#** using UMN MapServer software                                           **
+#**                                                                        **
+#**  This library is free software; you can redistribute it and/or         **
+#** modify it under the terms of the GNU Lesser General Public             **
+#** License as published by the Free Software Foundation; either           **
+#** version 2.1 of the License, or (at your option) any later version.     **
+#**                                                                        **
+#** This library is distributed in the hope that it will be useful,        **
+#** but WITHOUT ANY WARRANTY; without even the implied warranty of         **
+#** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      **
+#** Lesser General Public License for more details.                        **
+#**                                                                        **
+#** You should have received a copy of the GNU Lesser General Public       **
+#** License along with this library; if not, write to the Free Software    **
+#** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,             **
+#** MA  02110-1301  USA                                                    **
+#****************************************************************************
+
+MAP
+  NAME Katastr          # kazdy objekt by mel byt pojmenovan
+  SIZE 600 450          # velikost mapy v pixelech
+  EXTENT -654000 -1071000 -649800 -1068000 # hranicni souradnice
+  UNITS METERS          # mapove jednotky
+  IMAGECOLOR 240 240 240 # Barva pozadi
+  IMAGETYPE PNG         # typ vysledneho obrazku
+  FONTSET 'C:\ms4w\apps\katastr\mapservdata\fonts\fonts.list' #umisteni seznamu fontu
+  WEB
+      IMAGEPATH "C:\ms4w\tmp\ms_tmp\"  # adresar, kam se budou ukladat obrazky
+      IMAGEURL "/ms_tmp/"         # URL adresare s obrazky
+  END
+  
+  REFERENCE     # referencni mapa
+      IMAGE 'C:\ms4w\apps\katastr\mapservdata\refmap.png' # Obrazek referencni mapy
+      SIZE 200 150          # velikost referecni mapy
+      EXTENT -654000 -1071000 -649800 -1068000 # Hranicni souradnice
+      STATUS ON
+      MINBOXSIZE 10         # Minimalni velikost ramecku znazornujici aktualni oblast
+      MAXBOXSIZE 400        # Maximalni velikost ramecku znazornujici aktualni oblast
+      COLOR -1 -1 -1        # Barva vyplne ramecku - nyni pruhledna
+      OUTLINECOLOR 0 0 255  # Barva ramecku
+      MARKERSIZE 8          # Velikost znacky, ktera se objevi po dosazeni "MINBOXSIZE"
+      MARKER 'cross'        # symbol, ktery bude zobrazen
+  END
+  
+  SCALEBAR
+      IMAGECOLOR 255 255 255
+      LABEL
+        COLOR 0 0 0
+        SIZE TINY
+      END
+      STYLE 1
+      SIZE 100 2
+      COLOR 0 0 0
+      UNITS meters
+      INTERVALS 2
+      TRANSPARENT TRUE
+      STATUS EMBED
+  END # Scalebar object ends
+  
+  SYMBOL
+      NAME "cross"
+      TYPE vector
+      POINTS
+        2 0
+        2 4
+        -99 -99
+        0 2
+        4 2
+      END
+  END
+  PROJECTION
+          "init=EPSG:102067"
+  END
+  
+###############################################
+# zacatek vsech vrstev
+  LAYER
+    NAME      parcely
+    TYPE      POLYGON
+    CONNECTIONTYPE POSTGIS      # zdroj dat
+    CONNECTION "host=localhost dbname=nvf user=root password=830101 port=5432"
+    DATA  "geompar from par"    # upresneni tabulky a sloupce
+    STATUS    ON                # vrstva defaultne zapnuta
+    
+    # prvky vrstvy lze rozdelit podle urciteho kriteria do trid 
+    #   a pak je rozdilne zobrazovat - zde jen jedna
+    CLASS                       
+      NAME 'Parcely'  
+      TEMPLATE 'neco'           # toto tu musi byt, kvuli dotazovani
+      STYLE
+          COLOR         250 220 128 # barva vyplne
+          OUTLINECOLOR  128 128 128 # barva obrysu
+      END # style
+    END # class parcely
+  END # layer parcely  
+
+  LAYER
+    NAME            budovy
+    TYPE            POLYGON
+    CONNECTIONTYPE  POSTGIS
+    CONNECTION      "host=localhost dbname=nvf user=root password=830101 port=5432"
+    DATA            "geombud from bud"
+    STATUS          ON
+    # TRANSPARENCY    50
+    CLASS
+        NAME  'Budovy'
+        TEMPLATE 'neco'
+        STYLE
+            COLOR 250 128 229
+            OUTLINECOLOR 128 128 128
+        END # style
+    END # class
+  END # layer budovy
+  
+  LAYER
+    NAME            parcely_selected
+    TYPE            LINE
+    CONNECTIONTYPE  POSTGIS
+    CONNECTION "host=localhost dbname=nvf user=root password=830101 port=5432"
+    DATA            "geompar from par"
+    STATUS          OFF
+    CLASS
+        NAME        'Vybraná parcela'
+        STYLE
+            COLOR  110 96 175
+            WIDTH   3
+        END
+    END
+  END
+  
+  LAYER
+    NAME            budovy_selected
+    TYPE            LINE
+    CONNECTIONTYPE  POSTGIS
+    CONNECTION "host=localhost dbname=nvf user=root password=830101 port=5432"
+    DATA            "geombud from bud"
+    STATUS          OFF
+    CLASS
+        NAME        'Vybraná budova'
+        STYLE
+            COLOR  128 250 217
+            WIDTH   3
+        END
+    END
+  END
+  
+  LAYER                       # vrstva popisku parcel
+    NAME      parcely_label
+    TYPE      ANNOTATION
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost dbname=nvf user=root password=830101 port=5432"
+    DATA      "geompar from par"
+    STATUS    OFF             # defaultne vypnuta
+    LABELITEM "par_cislo_komplet" # jaky atribut pouzit pro popis
+    CLASS
+      STYLE
+        COLOR -1 -1 -1
+      END  
+      LABEL                   # vlastnosti popisku - barva, pismo, pozice...
+          COLOR 132 31 31
+          TYPE TRUETYPE
+          FONT courier
+          SIZE 10
+          ANTIALIAS TRUE
+          POSITION  CC
+          PARTIALS FALSE
+          MINDISTANCE 40
+          BUFFER 4
+          MINFEATURESIZE 50
+          FORCE TRUE
+      END # of label
+    END # of class     
+  END # of parcely_label
+  
+  LAYER
+    NAME            budovy_label
+    TYPE            ANNOTATION
+    CONNECTIONTYPE  POSTGIS
+    CONNECTION      "host=localhost dbname=nvf user=root 
+                    password=830101 port=5432"
+    DATA            "geombud from bud"
+    STATUS          OFF
+    LABELITEM       "cislo_bud_komplet"
+    CLASS
+      STYLE
+          COLOR -1 -1 -1
+      END # style
+      LABEL
+          COLOR           50 50 255
+          TYPE            TRUETYPE
+          FONT            courier-italic
+          SIZE            9
+          ANTIALIAS       TRUE
+          POSITION        LR
+          PARTIALS        FALSE
+          MINDISTANCE     30
+          BUFFER          4
+          MINFEATURESIZE  20
+          FORCE           FALSE
+      END # label
+    END # class
+  END # layer budovy_label
+  #############################################
+  # konec vsech vrstev
+  #############################################
+END  # konec mapfilu

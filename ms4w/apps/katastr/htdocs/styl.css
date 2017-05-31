@@ -1,0 +1,16 @@
+body {font-family:"Courier New";}
+table {width:100%;border-collapse:collapse;}
+table.sekce {border-top:double;}
+td {font-weight:bold;padding:3px;spacing:3px;}
+td.alignright {text-align:right;}
+th {text-align:left;font-weight:normal;font-style:italic;}
+th.sekce_pismeno {width:5%;font-style:normal;}
+th.bezzapisu {font-style:normal;font-weight:bold;}
+th.hlavickaleva {text-align:right; width:120px;font-style:normal;}
+th.hlavickaprava {text-align:right; width:180px;font-style:normal;}
+th.upozorneni {font-weight:bold; color:red;}
+th.zapatiprave{text-align:right;width:200px;}
+.stranka {width:800px;}
+.bold {font-weight:bold;}
+.borderbottom th {border-bottom:1px solid;}
+.italic {font-style:italic;}
